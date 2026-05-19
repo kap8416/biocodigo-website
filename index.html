@@ -3943,11 +3943,16 @@ body.view-locked { overflow: hidden; }
   </header>
 
   <div class="que-es-main">
+
     <!-- Statement institucional -->
     <div class="que-es-statement fade-in">
       <p>
-        <span class="grad-word">BioCódigo</span> es una <strong>startup científica</strong> y <strong>plataforma de innovación</strong> en Bioinformática, IA y datos biológicos aplicada a biociencias, salud, ambiente y educación científica.
-        Nace con la visión de transformar datos complejos en conocimiento útil, accesible e innovador, integrando <strong>ciencia, tecnología y divulgación</strong> para generar impacto real en academia, industria y sociedad.
+        <span class="grad-word">BioCódigo</span> es una 
+        <strong>biotech startup</strong> y plataforma de innovación enfocada en 
+        <strong>Bioinformática, Inteligencia Artificial y ciencias ómicas</strong>, 
+        dedicada al desarrollo de soluciones inteligentes para salud, biotecnología, ambiente y educación científica. 
+
+        Integramos <strong>biología computacional, ciencia de datos e IA</strong> para transformar datos biológicos complejos en conocimiento estratégico, accesible y de alto impacto, conectando investigación, tecnología y divulgación para impulsar innovación científica en academia, industria y sociedad.
       </p>
     </div>
 
@@ -4024,17 +4029,11 @@ body.view-locked { overflow: hidden; }
         <p class="mv-lead">
           Impulsar la innovación científica mediante bioinformática, inteligencia artificial y análisis de datos biológicos, creando soluciones accesibles que conecten ciencia, tecnología y sociedad.
         </p>
-        <p class="mv-body">
-          Democratizar el acceso al conocimiento científico y tecnológico a través de formación, investigación aplicada, desarrollo computacional y divulgación científica de alto impacto.
-        </p>
       </div>
       <div class="mv-card mv-vision fade-in">
         <span class="mv-label">Visión</span>
         <p class="mv-lead">
           Convertirse en una plataforma líder en Latinoamérica reconocida por integrar investigación, educación e innovación tecnológica para resolver desafíos en salud, ambiente y biotecnología.
-        </p>
-        <p class="mv-body">
-          BioCódigo aspira a construir una comunidad científica moderna, interdisciplinaria y global que inspire nuevas generaciones de investigadores y creadores.
         </p>
       </div>
     </div>
@@ -4046,17 +4045,183 @@ body.view-locked { overflow: hidden; }
           <span class="fundadora-label">La Fundadora</span>
           <h3 class="fundadora-name">Dra. Katia Aviña <em>Padilla</em></h3>
           <p class="fundadora-role">
-¡Hola, BioCoder! 🧬✨  
-Soy la Dra. Katia Aviña Padilla, científica mexicana, especialista en bioinformática, genómica regulatoria, biología de sistemas e inteligencia artificial aplicada a biociencias. He desarrollado investigación en transcriptómica, análisis multi-ómico y redes regulatorias, con experiencia en proyectos científicos internacionales, publicaciones indexadas y formación de talento en bioinformática y ciencia de datos.
-Además de mi trayectoria académica y científica, soy CEO & Founder de BioCódigo, una startup enfocada en acercar la bioinformática, la IA y el análisis de datos biológicos a estudiantes, investigadores, universidades y empresas en Latinoamérica. 🚀
-Actualmente estamos expandiendo nuestra comunidad y buscamos personas e instituciones que quieran crecer junto a nosotros:
-🔬 Fellow BioCódigo  
-Para investigadores, estudiantes y profesionales interesados en mentorías, formación especializada, proyectos académicos, workshops y desarrollo científico.
-🤝 Partner BioCódigo  
-Para universidades, laboratorios, empresas, redes científicas y organizaciones interesadas en colaboraciones, innovación, formación y soluciones bioinformáticas.
-Si te apasiona la ciencia, la tecnología y el futuro de las biociencias, queremos conectar contigo. 💜
-          </p>
-        </div>
+<div class="biocoder-intro fade-in">
+
+  <div class="intro-block">
+    <h2>¡Hola, BioCoder! 🧬✨</h2>
+
+    <p>
+      Soy la <strong>Dra. Katia Aviña Padilla</strong>, científica mexicana especializada en 
+      <strong>Bioinformática, Genómica Regulatoria y Biología de Sistemas</strong> 
+      aplicada a biociencias.
+    </p>
+
+    <p>
+      He desarrollado investigación en transcriptómica, análisis multi-ómico 
+      y redes regulatorias, participando en proyectos científicos internacionales, 
+      publicaciones indexadas y formación de talento en bioinformática y ciencia de datos.
+    </p>
+
+    <p>
+      Además de mi trayectoria académica y científica, soy 
+      <strong>CEO & Founder de BioCódigo</strong>, una startup enfocada en acercar la 
+      bioinformática, la inteligencia artificial y el análisis de datos biológicos 
+      a estudiantes, investigadores, universidades y empresas en Latinoamérica. 🚀
+    </p>
+  </div>
+
+.biocoder-intro{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.intro-block{
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.intro-block h2{
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+}
+
+.intro-block p{
+    font-size: 1.2rem;
+    line-height: 2rem;
+    margin-bottom: 1.4rem;
+    color: #d9d9d9;
+}
+
+.intro-divider{
+    width: 120px;
+    height: 4px;
+    margin: 0 auto 3rem auto;
+    border-radius: 999px;
+    background: linear-gradient(90deg,#8b5cf6,#ec4899);
+}
+
+.community-block{
+    text-align: center;
+}
+
+.community-block h3{
+    font-size: clamp(1.8rem,3vw,2.6rem);
+    margin-bottom: 1rem;
+}
+
+.community-subtitle{
+    font-size: 1.15rem;
+    opacity: .85;
+    margin-bottom: 3rem;
+}
+
+.community-cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+    gap: 2rem;
+}
+
+.community-card{
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 2rem;
+    text-align: left;
+    backdrop-filter: blur(12px);
+    transition: all .3s ease;
+}
+
+.community-card:hover{
+    transform: translateY(-6px);
+    border-color: rgba(168,85,247,.5);
+}
+
+.card-icon{
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.community-card h4{
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.community-card p{
+    margin-bottom: 1rem;
+    line-height: 1.7rem;
+    color: #d6d6d6;
+}
+
+.community-card ul{
+    padding-left: 1.2rem;
+}
+
+.community-card li{
+    margin-bottom: .7rem;
+    color: #ededed;
+}
+
+.closing-message{
+    margin-top: 3.5rem;
+}
+
+.closing-message p{
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 2rem;
+}
+
+      <!-- Fellow -->
+      <div class="community-card">
+        <div class="card-icon">🔬</div>
+        <h4>Fellow BioCódigo</h4>
+
+        <p>
+          Para investigadores, estudiantes y profesionales interesados en:
+        </p>
+
+        <ul>
+          <li>Mentorías especializadas</li>
+          <li>Formación científica</li>
+          <li>Proyectos académicos</li>
+          <li>Workshops y capacitación</li>
+          <li>Desarrollo científico y tecnológico</li>
+        </ul>
+      </div>
+
+      <!-- Partner -->
+      <div class="community-card">
+        <div class="card-icon">🤝</div>
+        <h4>Partner BioCódigo</h4>
+
+        <p>
+          Para universidades, laboratorios, empresas y organizaciones interesadas en:
+        </p>
+
+        <ul>
+          <li>Colaboraciones estratégicas</li>
+          <li>Innovación científica</li>
+          <li>Programas de formación</li>
+          <li>Soluciones bioinformáticas</li>
+          <li>Proyectos de IA y ciencia de datos</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="closing-message">
+      <p>
+        Si te apasiona la ciencia, la tecnología y el futuro de las biociencias,
+        <strong>queremos conectar contigo.</strong> 💜
+      </p>
+    </div>
+
+  </div>
+
+</div>
 
         <!-- ═══ IMAGEN C · RETRATO — para usar foto real: <img src="..." alt="Dra. Katia Aviña Padilla"> -->
         <div class="qe-img-frame qe-fundadora-portrait" data-image-slot="C-fundadora">
@@ -4070,6 +4235,52 @@ Si te apasiona la ciencia, la tecnología y el futuro de las biociencias, querem
     <div class="info-block info-block-wide fade-in">
       <div class="info-header">
         <span class="info-emoji">🎓</span>
+        .info-block-wide{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.info-header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+}
+
+.info-bullets{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 900px;
+}
+
+.info-bullets li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    font-size: 1.2rem;
+    padding: 1.4rem 0;
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.info-bullets li::before{
+    content: "✓";
+    color: #22c55e;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.info-bullets li:last-child{
+    border-bottom: none;
+}
         <h3>Formación y divulgación</h3>
       </div>
       <ul class="info-bullets">
