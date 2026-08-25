@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViromaLab — BioCódigo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#7B2EFF;
+    --magenta:#D946EF;
+    --cyan:#4CC9F0;
+    --bg:#0A0714;
+    --bg-2:#100B1E;
+    --ink:#F3EFFB;
+    --ink-dim:#B6ACCB;
+    --ink-faint:#6E6486;
+    --line:#241B3A;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  ::selection{background:var(--magenta);color:#0A0714;}
+
+  a{color:inherit;}
+
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,7,20,0.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+  }
+  .brand{
+    font-family:'Montserrat',sans-serif;
+    font-weight:900;
+    font-size:18px;
+    letter-spacing:0.01em;
+  }
+  .brand span{color:var(--cyan);}
+  .navlinks{display:flex;gap:32px;font-size:14px;color:var(--ink-dim);}
+  .navlinks a{text-decoration:none;transition:color .2s;}
+  .navlinks a:hover{color:var(--ink);}
+  @media (max-width:720px){.navlinks{display:none;}}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:92vh;
+    display:flex;
+    align-items:center;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  #noise-canvas{
+    position:absolute;
+    inset:0;
+    width:100%;height:100%;
+    opacity:0.9;
+  }
+  .hero-inner{
+    position:relative;
+    z-index:2;
+    padding:120px 0 100px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:28px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);
+  }
+  h1{
+    font-family:'Montserrat',sans-serif;
+    font-weight:900;
+    font-size:clamp(38px,6vw,74px);
+    line-height:1.03;
+    letter-spacing:-0.01em;
+    max-width:820px;
+  }
+  h1 .grad{
+    background:linear-gradient(100deg,var(--cyan) 0%, var(--violet) 55%, var(--magenta) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero-sub{
+    margin-top:26px;
+    max-width:560px;
+    font-size:18px;
+    line-height:1.6;
+    color:var(--ink-dim);
+  }
+  .hero-cta{
+    margin-top:44px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    padding:14px 26px;
+    border-radius:999px;
+    text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(100deg,var(--violet),var(--magenta));
+    color:#fff;
+    box-shadow:0 8px 30px -8px rgba(123,46,255,0.6);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px -6px rgba(217,70,239,0.55);}
+  .btn-ghost{
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+  }
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--ink);}
+
+  /* SECTION HEADERS */
+  section{padding:100px 0;border-bottom:1px solid var(--line);}
+  .kicker{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:18px;
+  }
+  h2{
+    font-family:'Montserrat',sans-serif;
+    font-weight:900;
+    font-size:clamp(28px,3.6vw,42px);
+    line-height:1.1;
+    max-width:680px;
+    letter-spacing:-0.01em;
+  }
+  .lede{
+    margin-top:20px;
+    max-width:640px;
+    font-size:16.5px;
+    line-height:1.7;
+    color:var(--ink-dim);
+  }
+
+  /* PROBLEM */
+  .problem-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:60px;
+    align-items:center;
+  }
+  @media (max-width:860px){.problem-grid{grid-template-columns:1fr;}}
+  .problem-text p{
+    font-size:16.5px;
+    line-height:1.75;
+    color:var(--ink-dim);
+  }
+  .problem-text p + p{margin-top:16px;}
+  .problem-text strong{color:var(--ink);font-weight:600;}
+  .noise-card{
+    border:1px solid var(--line);
+    background:var(--bg-2);
+    border-radius:16px;
+    padding:28px;
+  }
+  .noise-card .label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  #mini-resolved{width:100%;height:180px;border-radius:8px;display:block;background:#0A0714;}
+
+  .static-noise{
+    width:100%;height:180px;border-radius:8px;background:#0A0714;
+    position:relative;overflow:hidden;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .static-noise .base{
+    position:absolute;
+    color:#6E6486;
+    font-size:13px;
+    font-weight:500;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+  .static-noise .read{
+    position:absolute;
+    color:#5A5078;
+    font-size:9px;
+    font-weight:500;
+    letter-spacing:1px;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  .static-noise .qmark{
+    position:absolute;
+    color:#8878A0;
+    font-size:20px;
+    font-weight:700;
+    font-family:'Inter',sans-serif;
+    opacity:0.4;
+    animation: pulse-q 3s ease-in-out infinite alternate;
+  }
+  @keyframes drift{
+    0%{transform:translate(0,0);}
+    100%{transform:translate(3px,2px);}
+  }
+  @keyframes pulse-q{
+    0%{opacity:0.25;}
+    100%{opacity:0.5;}
+  }
+  /* Position each base letter */
+  .b1{top:12%;left:5%;font-size:15px;animation-delay:-0.5s;}
+  .b2{top:8%;left:18%;font-size:11px;animation-delay:-1.2s;}
+  .b3{top:22%;left:12%;font-size:14px;animation-delay:-2s;}
+  .b4{top:5%;left:32%;font-size:12px;animation-delay:-0.8s;}
+  .b5{top:30%;left:25%;font-size:10px;color:#4A4066;animation-delay:-1.5s;}
+  .b6{top:15%;left:42%;font-size:16px;animation-delay:-3s;}
+  .b7{top:40%;left:8%;font-size:13px;animation-delay:-0.3s;}
+  .b8{top:35%;left:38%;font-size:11px;animation-delay:-2.2s;}
+  .b9{top:50%;left:15%;font-size:14px;animation-delay:-1.8s;}
+  .b10{top:45%;left:50%;font-size:12px;animation-delay:-0.7s;}
+  .b11{top:55%;left:30%;font-size:10px;color:#4A4066;animation-delay:-2.5s;}
+  .b12{top:18%;left:58%;font-size:15px;animation-delay:-1s;}
+  .b13{top:60%;left:45%;font-size:13px;animation-delay:-3.2s;}
+  .b14{top:70%;left:10%;font-size:11px;animation-delay:-0.4s;}
+  .b15{top:65%;left:60%;font-size:14px;animation-delay:-2.8s;}
+  .b16{top:75%;left:35%;font-size:12px;animation-delay:-1.3s;}
+  .b17{top:10%;left:70%;font-size:13px;animation-delay:-2.1s;}
+  .b18{top:28%;left:65%;font-size:11px;animation-delay:-0.9s;}
+  .b19{top:48%;left:72%;font-size:10px;color:#4A4066;animation-delay:-3.5s;}
+  .b20{top:80%;left:55%;font-size:15px;animation-delay:-1.7s;}
+  .b21{top:38%;left:80%;font-size:12px;animation-delay:-0.6s;}
+  .b22{top:58%;left:78%;font-size:14px;animation-delay:-2.4s;}
+  .b23{top:20%;left:85%;font-size:11px;animation-delay:-1.1s;}
+  .b24{top:72%;left:75%;font-size:13px;animation-delay:-3.8s;}
+  .b25{top:85%;left:20%;font-size:10px;color:#4A4066;animation-delay:-2.6s;}
+  .b26{top:42%;left:90%;font-size:12px;animation-delay:-0.2s;}
+  .b27{top:82%;left:82%;font-size:14px;animation-delay:-1.9s;}
+  .b28{top:68%;left:88%;font-size:11px;animation-delay:-3.3s;}
+  .b29{top:88%;left:68%;font-size:13px;animation-delay:-1.4s;}
+  .b30{top:90%;left:42%;font-size:12px;animation-delay:-2.7s;}
+  /* Reads */
+  .r1{top:25%;left:5%;animation-delay:-1.6s;}
+  .r2{top:52%;left:55%;animation-delay:-2.3s;}
+  .r3{top:78%;left:28%;animation-delay:-0.8s;}
+  .r4{top:12%;left:75%;animation-delay:-3.1s;}
+  /* Question marks */
+  .q1{top:32%;left:48%;}
+  .q2{top:62%;left:22%;animation-delay:-1s;}
+  .q3{top:18%;left:68%;animation-delay:-2s;}
+
+  .compare-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+  @media (max-width:860px){.compare-grid{grid-template-columns:1fr;}}
+  .noise-card-resolved{
+    border-color:var(--violet);
+    box-shadow:0 0 0 1px rgba(123,46,255,0.15), 0 20px 50px -24px rgba(123,46,255,0.5);
+  }
+  .label-resolved{color:var(--cyan) !important;}
+  .compare-caption{
+    margin-top:14px;
+    font-size:13px;
+    color:var(--ink-faint);
+    line-height:1.5;
+  }
+
+  /* HOW IT WORKS */
+  .flow{
+    margin-top:60px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:16px;
+    overflow:hidden;
+  }
+  @media (max-width:860px){.flow{grid-template-columns:1fr;}}
+  .flow-step{
+    background:var(--bg);
+    padding:34px 30px;
+  }
+  .flow-step .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--cyan);
+    letter-spacing:0.06em;
+  }
+  .flow-step h3{
+    font-family:'Montserrat',sans-serif;
+    font-weight:800;
+    font-size:19px;
+    margin-top:10px;
+    margin-bottom:12px;
+  }
+  .flow-step p{
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--ink-dim);
+  }
+
+  /* CAPABILITIES */
+  .capabilities-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  @media (max-width:860px){.capabilities-grid{grid-template-columns:1fr;}}
+  .cap-card{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px 22px;
+    background:var(--bg-2);
+    border-top:2px solid var(--cyan);
+  }
+  .cap-card:nth-child(2){border-top-color:var(--violet);}
+  .cap-card:nth-child(3){border-top-color:var(--magenta);}
+  .cap-card h4{
+    font-family:'Montserrat',sans-serif;
+    font-weight:800;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  .cap-card p{
+    font-size:14px;
+    line-height:1.65;
+    color:var(--ink-dim);
+  }
+
+  /* CNN BOX */
+  .cnn-box{
+    margin-top:24px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:var(--bg-2);
+    padding:30px;
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:32px;
+    align-items:center;
+  }
+  @media (max-width:720px){.cnn-box{grid-template-columns:1fr;}}
+  .cnn-visual svg{width:100%;height:auto;display:block;}
+
+  /* VIDEO */
+  .video-cards-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+  }
+  @media (max-width:860px){.video-cards-grid{grid-template-columns:1fr;}}
+  .video-card{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+    background:var(--bg-2);
+  }
+  .video-card .label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .video-embed{
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    background:var(--bg);
+    min-height:380px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .video-embed-native{min-height:auto;}
+  .video-embed video{width:100%;display:block;background:#000;}
+  .video-embed blockquote.instagram-media{margin:0 !important;width:100% !important;}
+  .video-fallback{
+    font-size:13.5px;
+    color:var(--ink-faint);
+    margin-top:14px;
+  }
+  .video-fallback a{color:var(--cyan);text-decoration:none;}
+  .video-fallback a:hover{text-decoration:underline;}
+  .video-caption{
+    margin-top:14px;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink-dim);
+  }
+
+  /* RECOMMENDATIONS */
+  .rec-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+  }
+  @media (max-width:860px){.rec-grid{grid-template-columns:1fr;}}
+  .rec-card{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px;
+    background:var(--bg-2);
+  }
+  .rec-card .rec-icon{
+    width:34px;height:34px;
+    border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--cyan),var(--violet));
+    margin-bottom:16px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;font-weight:600;color:#0A0714;
+  }
+  .rec-card h4{
+    font-family:'Montserrat',sans-serif;
+    font-weight:800;
+    font-size:16px;
+    margin-bottom:8px;
+  }
+  .rec-card p{
+    font-size:14px;
+    line-height:1.65;
+    color:var(--ink-dim);
+  }
+
+  /* HPC ILLUSTRATION */
+  .hpc-illustration{
+    margin-top:44px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:26px;
+    background:var(--bg-2);
+    display:flex;
+    align-items:center;
+    gap:28px;
+    flex-wrap:wrap;
+  }
+  .hpc-illustration svg{flex:none;width:180px;height:auto;}
+  .hpc-illustration p{
+    font-size:14.5px;
+    line-height:1.7;
+    color:var(--ink-dim);
+    flex:1;
+    min-width:220px;
+  }
+
+  /* WHY IT WORKS / STATS */
+  .stat-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px;
+  }
+  @media (max-width:860px){.stat-grid{grid-template-columns:1fr;}}
+  .stat-card{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:30px 26px;
+    background:radial-gradient(120% 120% at 0% 0%, rgba(123,46,255,0.10), transparent 60%), var(--bg-2);
+  }
+  .stat-card .num{
+    font-family:'Montserrat',sans-serif;
+    font-weight:900;
+    font-size:38px;
+    background:linear-gradient(100deg,var(--cyan),var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .stat-card .stat-label{
+    margin-top:6px;
+    font-size:14.5px;
+    color:var(--ink-dim);
+    line-height:1.5;
+  }
+  .stat-card .stat-detail{
+    margin-top:14px;
+    font-size:13.5px;
+    color:var(--ink-faint);
+    line-height:1.6;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+
+  /* AWARDS STRIP */
+  .awards{
+    padding:52px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .awards-inner{
+    display:flex;flex-wrap:wrap;
+    gap:14px;
+  }
+  .pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    padding:11px 18px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    background:var(--bg-2);
+    display:flex;align-items:center;gap:9px;
+  }
+  .pill::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--magenta);
+  }
+
+  /* AUDIENCE */
+  .audience-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+  }
+  @media (max-width:860px){.audience-grid{grid-template-columns:1fr;}}
+  .aud-card{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px 26px;
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+  }
+  .aud-icon{
+    width:38px;height:38px;flex:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--violet),var(--cyan));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;font-size:14px;
+    color:#0A0714;
+  }
+  .aud-card h4{
+    font-family:'Montserrat',sans-serif;
+    font-weight:800;
+    font-size:16.5px;
+    margin-bottom:6px;
+  }
+  .aud-card p{
+    font-size:14px;
+    color:var(--ink-dim);
+    line-height:1.6;
+  }
+
+  /* CLOSING */
+  .closing{
+    padding:120px 0;
+    text-align:center;
+    position:relative;
+    border-bottom:none;
+  }
+  .closing-line{
+    font-family:'Montserrat',sans-serif;
+    font-weight:900;
+    font-size:clamp(24px,4vw,40px);
+    line-height:1.25;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .closing-line .grad{
+    background:linear-gradient(100deg,var(--cyan),var(--violet),var(--magenta));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .closing .btn{margin-top:40px;}
+
+  footer{
+    padding:32px 0 48px;
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-faint);
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">Viroma<span>Lab</span></div>
+    <div class="navlinks">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#video">Video</a>
+      <a href="#por-que">Validación</a>
+      <a href="#para-quien">Aplicaciones</a>
+      <a href="#recomendaciones">Recomendaciones</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <canvas id="noise-canvas"></canvas>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">BioCódigo · Genómica viral computacional</div>
+    <h1>Detecta lo invisible.<br>Encuentra <span class="grad">virus</span> donde nadie más los busca.</h1>
+    <p class="hero-sub">ViromaLab es el pipeline que convierte ruido metagenómico en genomas virales completos — virus, bacteriófagos y elementos virales endógenos — sin necesidad de una referencia previa, a escala de supercómputo.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#como-funciona">Cómo funciona →</a>
+      <a class="btn btn-ghost" href="#por-que">Ver validación científica</a>
+    </div>
+  </div>
+</section>
+
+<section id="el-problema">
+  <div class="wrap">
+    <div class="kicker">01 — El problema</div>
+    <h2>La mayoría de los virus del planeta no están catalogados.</h2>
+    <div class="problem-text" style="max-width:720px;">
+      <p>Cuando un virus aparece en una muestra de secuenciación —ambiental, clínica, agrícola o incluso en sedimentos de miles de años— las herramientas convencionales lo pasan por alto.</p>
+      <p><strong>No tiene genoma de referencia.</strong> Está fragmentado. Está mezclado entre millones de secuencias de otros organismos. Para un análisis metagenómico estándar, es indistinguible del ruido.</p>
+      <p>ViromaLab está diseñado exactamente para ese punto ciego.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="noise-card">
+        <div class="label">// lo que ve un análisis convencional</div>
+        <div class="static-noise">
+          <span class="base b1">A</span><span class="base b2">C</span><span class="base b3">G</span><span class="base b4">T</span>
+          <span class="base b5">N</span><span class="base b6">A</span><span class="base b7">C</span><span class="base b8">G</span>
+          <span class="base b9">T</span><span class="base b10">A</span><span class="base b11">N</span><span class="base b12">C</span>
+          <span class="base b13">G</span><span class="base b14">T</span><span class="base b15">A</span><span class="base b16">C</span>
+          <span class="base b17">T</span><span class="base b18">G</span><span class="base b19">N</span><span class="base b20">A</span>
+          <span class="base b21">C</span><span class="base b22">G</span><span class="base b23">A</span><span class="base b24">T</span>
+          <span class="base b25">N</span><span class="base b26">A</span><span class="base b27">G</span><span class="base b28">C</span>
+          <span class="base b29">T</span><span class="base b30">A</span>
+          <span class="read r1">ACGTNN</span>
+          <span class="read r2">TGCCAN</span>
+          <span class="read r3">NNATCG</span>
+          <span class="read r4">GCTA</span>
+          <span class="qmark q1">?</span>
+          <span class="qmark q2">?</span>
+          <span class="qmark q3">?</span>
+        </div>
+        <div class="compare-caption">Ruido. Fragmentos sin referencia, indistinguibles entre sí.</div>
+      </div>
+      <div class="noise-card noise-card-resolved">
+        <div class="label label-resolved">// lo que ve ViromaLab</div>
+        <canvas id="mini-resolved"></canvas>
+        <div class="compare-caption">Genomas identificados y clasificados: virus, bacteriófagos y EVEs.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="como-funciona">
+  <div class="wrap">
+    <div class="kicker">02 — Cómo funciona</div>
+    <h2>De datos crudos de secuenciación a genoma viral caracterizado.</h2>
+    <p class="lede">Un pipeline de tres etapas que combina detección de novo, ensamblaje optimizado para fragmentos virales y clasificación taxonómica — corriendo a escala de supercómputo.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="tag">ETAPA 01</div>
+        <h3>Detección de novo con Deep Learning</h3>
+        <p>Un modelo de <strong style="color:var(--ink);">red neuronal convolucional (CNN)</strong> aprende patrones de secuencia característicos de genomas virales y los distingue del resto del metagenoma — sin depender de que el virus ya esté descrito en una base de datos de referencia.</p>
+      </div>
+      <div class="flow-step">
+        <div class="tag">ETAPA 02</div>
+        <h3>Ensamblaje optimizado</h3>
+        <p>Reconstruye genomas completos o parciales a partir de fragmentos dispersos, incluso cuando el material genético está degradado.</p>
+      </div>
+      <div class="flow-step">
+        <div class="tag">ETAPA 03</div>
+        <h3>Clasificación taxonómica</h3>
+        <p>Distingue entre virus, bacteriófagos y elementos virales endógenos (EVEs) integrados en el genoma huésped, y ubica taxonómicamente cada genoma recuperado — listo para análisis o publicación.</p>
+      </div>
+    </div>
+
+    <div class="capabilities-grid">
+      <div class="cap-card">
+        <h4>Virus completos</h4>
+        <p>Genomas virales de novo, sin depender de una referencia previa en base de datos.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Bacteriófagos</h4>
+        <p>Detección y caracterización de fagos, incluso especies no descritas — como el genoma de Caudoviricetes recuperado en el Lago de Chalco.</p>
+      </div>
+      <div class="cap-card">
+        <h4>Elementos virales endógenos (EVEs)</h4>
+        <p>Secuencias virales integradas en el genoma del huésped — el pipeline identificó un candidato del supergrupo Adintoviridae/Polinton en el genoma de la babosa de jardín <em>Deroceras laeve</em>.</p>
+      </div>
+    </div>
+
+    <div class="cnn-box">
+      <div class="cnn-visual">
+        <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="cnnLine" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#4CC9F0"/>
+              <stop offset="100%" stop-color="#D946EF"/>
+            </linearGradient>
+          </defs>
+          <g stroke="url(#cnnLine)" stroke-width="1" opacity="0.55">
+            <!-- input layer to hidden layer 1 -->
+            <line x1="20" y1="24" x2="80" y2="20"/><line x1="20" y1="24" x2="80" y2="55"/><line x1="20" y1="24" x2="80" y2="90"/><line x1="20" y1="24" x2="80" y2="125"/>
+            <line x1="20" y1="60" x2="80" y2="20"/><line x1="20" y1="60" x2="80" y2="55"/><line x1="20" y1="60" x2="80" y2="90"/><line x1="20" y1="60" x2="80" y2="125"/>
+            <line x1="20" y1="96" x2="80" y2="20"/><line x1="20" y1="96" x2="80" y2="55"/><line x1="20" y1="96" x2="80" y2="90"/><line x1="20" y1="96" x2="80" y2="125"/>
+            <line x1="20" y1="132" x2="80" y2="20"/><line x1="20" y1="132" x2="80" y2="55"/><line x1="20" y1="132" x2="80" y2="90"/><line x1="20" y1="132" x2="80" y2="125"/>
+            <!-- hidden 1 to hidden 2 -->
+            <line x1="80" y1="20" x2="140" y2="40"/><line x1="80" y1="20" x2="140" y2="105"/>
+            <line x1="80" y1="55" x2="140" y2="40"/><line x1="80" y1="55" x2="140" y2="105"/>
+            <line x1="80" y1="90" x2="140" y2="40"/><line x1="80" y1="90" x2="140" y2="105"/>
+            <line x1="80" y1="125" x2="140" y2="40"/><line x1="80" y1="125" x2="140" y2="105"/>
+            <!-- hidden 2 to output -->
+            <line x1="140" y1="40" x2="198" y2="72"/><line x1="140" y1="105" x2="198" y2="72"/>
+          </g>
+          <g>
+            <circle cx="20" cy="24" r="4" fill="#4CC9F0"/><circle cx="20" cy="60" r="4" fill="#4CC9F0"/><circle cx="20" cy="96" r="4" fill="#4CC9F0"/><circle cx="20" cy="132" r="4" fill="#4CC9F0"/>
+            <circle cx="80" cy="20" r="4" fill="#7B2EFF"/><circle cx="80" cy="55" r="4" fill="#7B2EFF"/><circle cx="80" cy="90" r="4" fill="#7B2EFF"/><circle cx="80" cy="125" r="4" fill="#7B2EFF"/>
+            <circle cx="140" cy="40" r="4" fill="#7B2EFF"/><circle cx="140" cy="105" r="4" fill="#7B2EFF"/>
+            <circle cx="198" cy="72" r="6" fill="#D946EF"/>
+          </g>
+        </svg>
+      </div>
+      <div class="cnn-copy">
+        <div class="kicker" style="margin-bottom:10px;">En el núcleo del pipeline</div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px;margin-bottom:10px;">Deep Learning (CNN) como filtro de primera pasada</h3>
+        <p style="font-size:15px;line-height:1.7;color:var(--ink-dim);">La red convolucional actúa antes del ensamblaje: revisa cada fragmento de secuencia y decide, por patrón, si tiene origen viral — sin necesitar un alineamiento exacto contra una referencia. Eso es lo que le permite encontrar virus <em>nuevos</em>, bacteriófagos y elementos virales endógenos ocultos dentro del genoma huésped, no solo los ya catalogados, y es la razón por la que el pipeline escala bien en infraestructura de supercómputo: filtra el volumen bruto antes de las etapas computacionalmente más costosas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <div class="kicker">ViromaLab reconocido y en acción</div>
+    <h2>Reconocimiento público y una mirada al análisis.</h2>
+    <div class="video-cards-grid">
+      <div class="video-card">
+        <div class="label">// Premio IMPI 2026 — InnovaFest Querétaro</div>
+        <div class="video-embed">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcWV2p9vhJI/" data-instgrm-version="14" style="width:100%;"></blockquote>
+        </div>
+        <div class="video-fallback">Si el video no carga aquí, <a href="https://www.instagram.com/reel/DcWV2p9vhJI/" target="_blank" rel="noopener">véanlo directo en Instagram ↗</a></div>
+        <p class="video-caption">Dra. Katia Aviña-Padilla recibiendo el Premio IMPI 2026 por ViromaLab en InnovaFest Querétaro.</p>
+      </div>
+      <div class="video-card">
+        <div class="label">// Cómo funciona</div>
+        <div class="video-embed video-embed-native">
+          <!--
+            Reemplaza el src de abajo por tu archivo de video una vez que lo subas
+            (ej. /videos/viromalab-como-funciona.mp4). También puedes usar un enlace
+            de YouTube/Vimeo sin listar y pegar aquí el <iframe> que te den.
+          -->
+          <video controls preload="none" playsinline>
+            <source src="REEMPLAZA_CON_TU_VIDEO.mp4" type="video/mp4">
+            Tu navegador no soporta video HTML5.
+          </video>
+        </div>
+        <p class="video-caption">Explicación visual del análisis: de datos crudos de secuenciación a genomas clasificados.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="por-que">
+  <div class="wrap">
+    <div class="kicker">03 — Por qué funciona</div>
+    <h2>Puesto a prueba en los escenarios más exigentes que existen.</h2>
+    <p class="lede">Donde otros ven ruido metagenómico, ViromaLab encuentra virus, bacteriófagos y elementos virales endógenos — y lo ha demostrado en condiciones reales, no solo en teoría.</p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="num">9/9</div>
+        <div class="stat-label">Genomas virales antiguos recuperados al 100%</div>
+        <div class="stat-detail">Proyecto del paleoviroma del Lago de Chalco, corrido sobre el clúster Fénix/LAVIS-UNAM. Manuscrito en preparación para Nature Communications / Nature Microbiology.</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">1</div>
+        <div class="stat-label">Bacteriófago novedoso caracterizado</div>
+        <div class="stat-detail">Genoma de Caudoviricetes hasta entonces no descrito, identificado en el mismo set de datos del Lago de Chalco.</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">EVE</div>
+        <div class="stat-label">Elemento viral endógeno identificado en genoma huésped</div>
+        <div class="stat-detail">Candidato del supergrupo Adintoviridae/Polinton encontrado en el genoma de la babosa de jardín Deroceras laeve, en colaboración con el Dr. Alfredo Varela-Echavarría.</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">HPC</div>
+        <div class="stat-label">Capacidad de cómputo a escala validada</div>
+        <div class="stat-detail">Ganadores del proyecto de Supercómputo Academia-Industria con CIMAT: confirma que ViromaLab escala en infraestructura de cómputo de alto rendimiento.</div>
+      </div>
+    </div>
+
+    <div class="hpc-illustration">
+      <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="hpcGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#4CC9F0"/>
+            <stop offset="100%" stop-color="#7B2EFF"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#hpcGrad)" stroke-width="1.4">
+          <rect x="10" y="18" width="28" height="84" rx="3"/>
+          <rect x="46" y="10" width="28" height="92" rx="3"/>
+          <rect x="82" y="26" width="28" height="76" rx="3"/>
+          <rect x="118" y="16" width="28" height="86" rx="3"/>
+        </g>
+        <g fill="#D946EF">
+          <circle cx="24" cy="30" r="2"/><circle cx="24" cy="42" r="2"/><circle cx="24" cy="54" r="2"/>
+          <circle cx="60" cy="24" r="2"/><circle cx="60" cy="36" r="2"/><circle cx="60" cy="48" r="2"/>
+          <circle cx="96" cy="38" r="2"/><circle cx="96" cy="50" r="2"/><circle cx="96" cy="62" r="2"/>
+          <circle cx="132" cy="28" r="2"/><circle cx="132" cy="40" r="2"/><circle cx="132" cy="52" r="2"/>
+        </g>
+      </svg>
+      <p>El mismo pipeline que corre en el clúster Fénix/LAVIS-UNAM fue puesto a prueba formalmente en el proyecto de <strong style="color:var(--ink);">Supercómputo Academia-Industria con CIMAT</strong> — validando que la arquitectura no solo detecta con precisión, sino que sostiene ese desempeño al procesar volúmenes de datos de escala industrial.</p>
+    </div>
+  </div>
+</section>
+
+<section class="awards" style="border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="kicker" style="margin-bottom:20px;">Reconocimientos y tracción</div>
+    <div class="awards-inner">
+      <div class="pill">Premio IMPI 2026 — InnovaFest Querétaro</div>
+      <div class="pill">Mención honorífica — InnovaFest Querétaro 2026</div>
+      <div class="pill">Ganadores · Supercómputo Academia-Industria (CIMAT)</div>
+      <div class="pill">Presentado a nu3 (grupo inversionista)</div>
+      <div class="pill">En evaluación — showcase de demos MICAI</div>
+      <div class="pill">Proyecto viroma en rosales — Erika Zamora Macorra (Chapingo)</div>
+    </div>
+  </div>
+</section>
+
+<section id="para-quien">
+  <div class="wrap">
+    <div class="kicker">04 — Para quién es</div>
+    <h2>Donde detectar un virus a tiempo cambia el resultado.</h2>
+    <div class="audience-grid">
+      <div class="aud-card">
+        <div class="aud-icon">01</div>
+        <div>
+          <h4>Vigilancia epidemiológica</h4>
+          <p>Detección temprana de patógenos emergentes o desconocidos, antes de que se conviertan en brote.</p>
+        </div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-icon">02</div>
+        <div>
+          <h4>Agro y fitosanidad</h4>
+          <p>Identificación de virus en cultivos en etapas tempranas, protegiendo la producción antes de que el daño sea irreversible.</p>
+        </div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-icon">03</div>
+        <div>
+          <h4>Investigación científica</h4>
+          <p>Paleovirología, ecología viral y descubrimiento de nuevas especies, con resultados listos para publicación.</p>
+        </div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-icon">04</div>
+        <div>
+          <h4>Industria y gobierno</h4>
+          <p>Análisis de riesgo biológico a partir de muestras ambientales, con capacidad de cómputo validada a escala.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recomendaciones">
+  <div class="wrap">
+    <div class="kicker">05 — ¿Cuándo conviene este análisis?</div>
+    <h2>Buenos candidatos para el servicio de ViromaLab.</h2>
+    <p class="lede">No es una herramienta que se ejecuta por cuenta propia — es un análisis que hacemos por ti. Esto es lo que buscamos al evaluar una muestra o dataset.</p>
+    <div class="rec-grid">
+      <div class="rec-card">
+        <div class="rec-icon">01</div>
+        <h4>No hay referencia clara</h4>
+        <p>El servicio da su mayor ventaja justo donde el alineamiento tradicional falla: muestras ambientales, degradadas o de organismos poco estudiados.</p>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">02</div>
+        <h4>Muestras degradadas o antiguas</h4>
+        <p>El ensamblaje está optimizado para fragmentos dispersos — no descartes una muestra por su baja calidad antes de enviárnosla.</p>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">03</div>
+        <h4>Datasets grandes o de alto volumen</h4>
+        <p>Corremos el análisis en infraestructura de supercómputo propia (clúster Fénix/LAVIS-UNAM, validada en el proyecto CIMAT) — no necesitas cómputo propio para procesarlo.</p>
+      </div>
+      <div class="rec-card">
+        <div class="rec-icon">04</div>
+        <h4>El objetivo es publicación científica</h4>
+        <p>Si buscas resultados listos para publicar, incluimos clasificación taxonómica y curaduría de los genomas de mayor confianza como parte de la entrega.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing" style="border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="closing-line">ViromaLab no busca el virus que ya conoces.<br><span class="grad">Encuentra el que nadie ha visto.</span></div>
+    <a class="btn btn-primary" href="https://wa.me/524421154608?text=Hola%20BioC%C3%B3digo%2C%20me%20interesa%20un%20an%C3%A1lisis%20con%20ViromaLab" target="_blank" rel="noopener">Solicitar un análisis →</a>
+  </div>
+</section>
+
+<footer>
+  BioCódigo · La vida contada en datos
+</footer>
+
+<script>
+// Signature animation: metagenomic "noise" resolving into a viral genome signal.
+// Runs on both the hero canvas (large, ambient) and the mini-noise card (static-looking sample).
+
+// Lightens (positive amt) or darkens (negative amt) a hex color.
+function shade(hex, amt){
+  const c = hex.replace('#','');
+  const num = parseInt(c.length===3 ? c.split('').map(ch=>ch+ch).join('') : c, 16);
+  let r2 = (num>>16)&255, g2=(num>>8)&255, b2=num&255;
+  const t = amt<0 ? 0 : 255;
+  const p = Math.abs(amt);
+  r2 = Math.round((t-r2)*p + r2);
+  g2 = Math.round((t-g2)*p + g2);
+  b2 = Math.round((t-b2)*p + b2);
+  return `rgb(${r2},${g2},${b2})`;
+}
+
+// Draws a more anatomically-styled virus glyph: faceted icosahedral-ish capsid
+// with shading, a membrane rim, and glycoprotein spikes (stem + bulbous head) —
+// modeled loosely on an enveloped virus (e.g. coronavirus-family silhouette).
+function drawVirus(ctx, x, y, r, color, baseAngle, rot, spikeCount){
+  spikeCount = spikeCount || 10;
+  const coreR = Math.max(3, r*0.58);
+  const spikeLen = r*0.72;
+  const spikeHeadR = Math.max(1.3, r*0.15);
+
+  ctx.save();
+
+  // Soft outer glow so the virus reads clearly against the dark background
+  ctx.shadowColor = color;
+  ctx.shadowBlur = coreR*0.9;
+
+  // Spikes: stem + bulbous glycoprotein head, drawn first so the core sits on top
+  ctx.lineCap = 'round';
+  for(let i=0;i<spikeCount;i++){
+    const a = baseAngle + rot + (i/spikeCount)*Math.PI*2;
+    const wobble = Math.sin(rot*2 + i)*0.04;
+    const len = spikeLen * (0.88 + 0.12*Math.sin(i*2.3 + rot));
+    const x1 = x + Math.cos(a)*coreR*0.94;
+    const y1 = y + Math.sin(a)*coreR*0.94;
+    const x2 = x + Math.cos(a+wobble)*(coreR+len);
+    const y2 = y + Math.sin(a+wobble)*(coreR+len);
+
+    ctx.strokeStyle = shade(color, -0.15);
+    ctx.lineWidth = Math.max(1, r*0.1);
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+
+    ctx.fillStyle = shade(color, 0.3);
+    ctx.beginPath();
+    ctx.arc(x2,y2, spikeHeadR, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = shade(color, -0.2);
+    ctx.lineWidth = Math.max(0.5, r*0.03);
+    ctx.stroke();
+  }
+
+  ctx.shadowBlur = 0;
+
+  // Capsid body: layered radial gradient for volume + a highlight for sheen
+  const grad = ctx.createRadialGradient(
+    x - coreR*0.4, y - coreR*0.4, coreR*0.05,
+    x, y, coreR*1.05
+  );
+  grad.addColorStop(0, shade(color, 0.6));
+  grad.addColorStop(0.45, color);
+  grad.addColorStop(1, shade(color, -0.45));
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(x,y,coreR,0,Math.PI*2);
+  ctx.fill();
+
+  // Faceted texture: short arcs suggesting an icosahedral capsid surface
+  ctx.strokeStyle = shade(color, -0.3);
+  ctx.globalAlpha *= 0.5;
+  ctx.lineWidth = Math.max(0.5, r*0.035);
+  const facets = 6;
+  for(let f=0; f<facets; f++){
+    const fa = rot*0.6 + (f/facets)*Math.PI*2;
+    ctx.beginPath();
+    ctx.arc(x, y, coreR*0.62, fa, fa + Math.PI/facets*0.85);
+    ctx.stroke();
+  }
+  ctx.globalAlpha /= 0.5;
+
+  // Membrane rim
+  ctx.strokeStyle = shade(color, -0.45);
+  ctx.lineWidth = Math.max(0.6, r*0.045);
+  ctx.beginPath();
+  ctx.arc(x,y,coreR*0.99,0,Math.PI*2);
+  ctx.stroke();
+
+  // Small specular highlight for a glossy, dimensional feel
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.beginPath();
+  ctx.ellipse(x - coreR*0.32, y - coreR*0.32, coreR*0.22, coreR*0.13, -0.6, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function initNoiseCanvas(canvasId, opts){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let W, H, dpr;
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const density = opts.density || 0.00022;
+  const count = Math.max(18, Math.floor(W * H * density));
+  const colors = ['#4CC9F0', '#7B2EFF', '#D946EF'];
+  const bases = ['A','C','G','T'];
+
+  const particles = [];
+  for(let i=0;i<count;i++){
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      tx: Math.random()*W,
+      ty: Math.random()*H,
+      phase: Math.random()*Math.PI*2,
+      speed: 0.15 + Math.random()*0.35,
+      r: 5 + Math.random()*7,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      base: bases[Math.floor(Math.random()*bases.length)],
+      showBase: Math.random() < 0.06,
+      signalT: Math.random(),
+      spikeAngle: Math.random()*Math.PI*2,
+      spikes: 6 + Math.floor(Math.random()*3)
+    });
+  }
+
+  // A gentle "signal path" - a sine-ish line that some particles snap toward,
+  // representing a genome being resolved out of noise.
+  function signalY(x, t){
+    return H*0.5 + Math.sin((x/W)*Math.PI*2.4 + t*0.35)*H*0.16;
+  }
+
+  let t = 0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    t += 0.008;
+
+    for(const p of particles){
+      // Cycle each particle between drifting freely and being pulled toward the signal line
+      p.signalT += 0.0016 * p.speed;
+      if(p.signalT > 1) p.signalT = 0;
+      const pull = Math.sin(p.signalT * Math.PI); // 0 -> 1 -> 0
+
+      const freeX = p.x + Math.sin(t + p.phase)*0.15;
+      const freeY = p.y + Math.cos(t*0.8 + p.phase)*0.15;
+
+      const sigY = signalY(p.x, t);
+      const drawX = freeX;
+      const drawY = freeY * (1-pull*0.6) + sigY * (pull*0.6);
+
+      const alpha = 0.25 + pull*0.55;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+
+      if(p.showBase && pull > 0.55){
+        ctx.font = '10px JetBrains Mono, monospace';
+        ctx.fillStyle = p.color;
+        ctx.fillText(p.base, drawX, drawY);
+      } else {
+        drawVirus(ctx, drawX, drawY, (p.r*2.2) + pull*2.4, p.color, p.spikeAngle, t*0.5 + p.phase, p.spikes);
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    if(!prefersReduced){
+      requestAnimationFrame(frame);
+    }
+  }
+
+  if(prefersReduced){
+    // Draw a single static-ish frame
+    frame();
+  } else {
+    frame();
+  }
+}
+
+initNoiseCanvas('noise-canvas', {density: 0.000045});
+
+// --- Drawing functions for three distinct organism types ---
+
+// Classic T4-style bacteriophage: icosahedral head + tail tube + baseplate + tail fibers
+function drawPhage(ctx, x, y, scale, color, rot){
+  ctx.save();
+  ctx.translate(x, y);
+  const s = scale;
+
+  // Glow
+  ctx.shadowColor = color;
+  ctx.shadowBlur = s*0.6;
+
+  // HEAD: hexagon (icosahedral cross-section)
+  const headR = s*0.38;
+  const headY = -s*0.32;
+  const grad = ctx.createRadialGradient(
+    -headR*0.3 , headY - headR*0.3, headR*0.05,
+    0, headY, headR*1.1
+  );
+  grad.addColorStop(0, shade(color, 0.5));
+  grad.addColorStop(0.5, color);
+  grad.addColorStop(1, shade(color, -0.4));
+
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const a = -Math.PI/2 + (i/6)*Math.PI*2;
+    const px = Math.cos(a)*headR;
+    const py = headY + Math.sin(a)*headR;
+    if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // Head rim
+  ctx.strokeStyle = shade(color, -0.3);
+  ctx.lineWidth = Math.max(0.5, s*0.02);
+  ctx.stroke();
+
+  // Specular highlight on head
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(-headR*0.25, headY - headR*0.25, headR*0.18, headR*0.10, -0.5, 0, Math.PI*2);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  // COLLAR
+  ctx.fillStyle = shade(color, -0.2);
+  ctx.fillRect(-s*0.08, headY + headR - s*0.02, s*0.16, s*0.06);
+
+  // TAIL TUBE
+  const tailTop = headY + headR + s*0.04;
+  const tailBot = s*0.28;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(1, s*0.05);
+  ctx.beginPath();
+  ctx.moveTo(0, tailTop);
+  ctx.lineTo(0, tailBot);
+  ctx.stroke();
+
+  // Tail sheath rings
+  ctx.strokeStyle = shade(color, -0.15);
+  ctx.lineWidth = Math.max(0.5, s*0.025);
+  const rings = 4;
+  for(let r=0;r<rings;r++){
+    const ry = tailTop + (tailBot - tailTop)*(r/(rings-1));
+    ctx.beginPath();
+    ctx.moveTo(-s*0.06, ry);
+    ctx.lineTo(s*0.06, ry);
+    ctx.stroke();
+  }
+
+  // BASEPLATE
+  ctx.fillStyle = shade(color, -0.1);
+  ctx.beginPath();
+  ctx.moveTo(-s*0.12, tailBot);
+  ctx.lineTo(s*0.12, tailBot);
+  ctx.lineTo(s*0.06, tailBot + s*0.05);
+  ctx.lineTo(-s*0.06, tailBot + s*0.05);
+  ctx.closePath();
+  ctx.fill();
+
+  // TAIL FIBERS: 6 fibers angled outward, with slight bend
+  ctx.strokeStyle = shade(color, 0.1);
+  ctx.lineWidth = Math.max(0.5, s*0.02);
+  ctx.lineCap = 'round';
+  const fiberCount = 6;
+  for(let f=0;f<fiberCount;f++){
+    const side = f < fiberCount/2 ? -1 : 1;
+    const idx = f < fiberCount/2 ? f : f - fiberCount/2;
+    const spread = 0.3 + idx*0.25;
+    const bendX = side*s*spread*0.5;
+    const bendY = tailBot + s*0.15;
+    const endX = side*s*spread;
+    const endY = tailBot + s*0.28;
+    ctx.beginPath();
+    ctx.moveTo(0, tailBot + s*0.03);
+    ctx.quadraticCurveTo(bendX, bendY, endX, endY);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+// EVE: DNA double helix with a highlighted viral insertion segment
+function drawEVE(ctx, x, y, scale, color, rot){
+  ctx.save();
+  ctx.translate(x, y);
+  const s = scale;
+  const helixLen = s*1.0;
+  const helixAmp = s*0.18;
+  const steps = 50;
+
+  // Draw the host DNA in dim gray, with the EVE insert in color
+  const insertStart = 0.3;
+  const insertEnd = 0.7;
+
+  // Back strand
+  for(let i=0;i<steps-1;i++){
+    const t1 = i/steps;
+    const t2 = (i+1)/steps;
+    const x1 = -helixLen/2 + t1*helixLen;
+    const x2 = -helixLen/2 + t2*helixLen;
+    const y1 = Math.sin(t1*Math.PI*3 + rot)*helixAmp;
+    const y2 = Math.sin(t2*Math.PI*3 + rot)*helixAmp;
+    const isInsert = t1 >= insertStart && t1 <= insertEnd;
+    ctx.strokeStyle = isInsert ? shade(color, -0.3) : '#2A2440';
+    ctx.lineWidth = isInsert ? Math.max(1.5, s*0.04) : Math.max(0.8, s*0.025);
+    ctx.globalAlpha = isInsert ? 0.7 : 0.35;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  // Rungs (base pairs) connecting the two strands
+  for(let i=0;i<steps;i+=3){
+    const t1 = i/steps;
+    const xr = -helixLen/2 + t1*helixLen;
+    const y_top = Math.sin(t1*Math.PI*3 + rot)*helixAmp;
+    const y_bot = Math.sin(t1*Math.PI*3 + rot + Math.PI)*helixAmp;
+    const isInsert = t1 >= insertStart && t1 <= insertEnd;
+    ctx.strokeStyle = isInsert ? shade(color, -0.1) : '#1E1A30';
+    ctx.lineWidth = Math.max(0.5, s*0.015);
+    ctx.globalAlpha = isInsert ? 0.5 : 0.18;
+    ctx.beginPath();
+    ctx.moveTo(xr, y_top);
+    ctx.lineTo(xr, y_bot);
+    ctx.stroke();
+  }
+
+  // Front strand
+  for(let i=0;i<steps-1;i++){
+    const t1 = i/steps;
+    const t2 = (i+1)/steps;
+    const x1 = -helixLen/2 + t1*helixLen;
+    const x2 = -helixLen/2 + t2*helixLen;
+    const y1 = Math.sin(t1*Math.PI*3 + rot + Math.PI)*helixAmp;
+    const y2 = Math.sin(t2*Math.PI*3 + rot + Math.PI)*helixAmp;
+    const isInsert = t1 >= insertStart && t1 <= insertEnd;
+    ctx.strokeStyle = isInsert ? color : '#3A3252';
+    ctx.lineWidth = isInsert ? Math.max(1.8, s*0.045) : Math.max(1, s*0.03);
+    ctx.globalAlpha = isInsert ? 0.9 : 0.4;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  // Glow on the insert region
+  ctx.globalAlpha = 0.15;
+  ctx.fillStyle = color;
+  const glowX = -helixLen/2 + insertStart*helixLen;
+  const glowW = (insertEnd - insertStart)*helixLen;
+  ctx.fillRect(glowX, -helixAmp*1.6, glowW, helixAmp*3.2);
+  ctx.globalAlpha = 1;
+
+  // Bracket markers
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(0.8, s*0.025);
+  ctx.globalAlpha = 0.7;
+  const bH = helixAmp*1.8;
+  // left bracket
+  ctx.beginPath();
+  ctx.moveTo(glowX + 3, -bH);
+  ctx.lineTo(glowX, -bH);
+  ctx.lineTo(glowX, bH);
+  ctx.lineTo(glowX + 3, bH);
+  ctx.stroke();
+  // right bracket
+  const bR = glowX + glowW;
+  ctx.beginPath();
+  ctx.moveTo(bR - 3, -bH);
+  ctx.lineTo(bR, -bH);
+  ctx.lineTo(bR, bH);
+  ctx.lineTo(bR - 3, bH);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+// RESOLVED CANVAS: three distinct organisms
+function initResolvedCanvas(canvasId){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, dpr;
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let t = 0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    t += 0.012;
+
+    const col = W / 3;
+
+    // 1) VIRUS — enveloped, with spikes
+    const vx = col*0.5;
+    const vy = H*0.42;
+    drawVirus(ctx, vx, vy, 26, '#4CC9F0', 0, t*0.4, 10);
+    ctx.font = '700 11px JetBrains Mono, monospace';
+    ctx.fillStyle = '#4CC9F0';
+    ctx.textAlign = 'center';
+    ctx.fillText('VIRUS', vx, H*0.82);
+    ctx.font = '400 8.5px Inter, sans-serif';
+    ctx.fillStyle = shade('#4CC9F0', -0.1);
+    ctx.fillText('Genoma completo', vx, H*0.92);
+
+    // 2) PHAGE — T4-style bacteriophage
+    const px = col*1.5;
+    const py = H*0.40;
+    drawPhage(ctx, px, py, 52, '#7B2EFF', t*0.3);
+    ctx.font = '700 11px JetBrains Mono, monospace';
+    ctx.fillStyle = '#7B2EFF';
+    ctx.textAlign = 'center';
+    ctx.fillText('FAGO', px, H*0.82);
+    ctx.font = '400 8.5px Inter, sans-serif';
+    ctx.fillStyle = shade('#7B2EFF', 0.1);
+    ctx.fillText('Caudoviricetes', px, H*0.92);
+
+    // 3) EVE — viral element inserted in host DNA
+    const ex = col*2.5;
+    const ey = H*0.42;
+    drawEVE(ctx, ex, ey, 70, '#D946EF', t*0.25);
+    ctx.font = '700 11px JetBrains Mono, monospace';
+    ctx.fillStyle = '#D946EF';
+    ctx.textAlign = 'center';
+    ctx.fillText('EVE', ex, H*0.82);
+    ctx.font = '400 8.5px Inter, sans-serif';
+    ctx.fillStyle = shade('#D946EF', 0.1);
+    ctx.fillText('Adintoviridae', ex, H*0.92);
+
+    ctx.textAlign = 'left';
+    if(!prefersReduced) requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+initResolvedCanvas('mini-resolved');
+</script>
+
+<script async src="//www.instagram.com/embed.js"></script>
+
+</body>
+</html>
